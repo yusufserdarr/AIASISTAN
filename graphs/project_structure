@@ -1,0 +1,31 @@
+// UPWORKK Proje Yapısı
+digraph project_structure {
+	rankdir=TB size="12,16"
+	node [fillcolor=lightblue shape=box style=filled]
+	app [label="app.py
+(Ana Flask Uygulaması)" fillcolor=lightgreen]
+	ai [label="AI Asistan
+(OpenRouter API)" fillcolor=orange]
+	voice [label="Sesli Asistan
+(Twilio)" fillcolor=yellow]
+	db [label="Veritabanı
+(JSON Files)" fillcolor=lightcoral]
+	web [label="Web Arayüzü
+(HTML/CSS/JS)" fillcolor=lightpink]
+	appointments [label="Randevu Sistemi" fillcolor=wheat]
+	vehicles [label="Araç Veritabanı" fillcolor=wheat]
+	chat [label="Metin Chat" fillcolor=wheat]
+	callback [label="Geri Arama" fillcolor=wheat]
+	app -> ai [label="API Çağrıları"]
+	app -> voice [label=Webhook]
+	app -> db [label="CRUD İşlemler"]
+	app -> web [label="Render Templates"]
+	app -> appointments [label="Yönetim"]
+	app -> vehicles [label=Listeleme]
+	app -> chat [label="AI Chat"]
+	app -> callback [label="Otomatik Arama"]
+	voice -> appointments [label="Sesli Randevu"]
+	ai -> chat [label="Akıllı Yanıt"]
+	db -> appointments [label="Kayıt"]
+	db -> vehicles [label=Veri]
+}

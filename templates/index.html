@@ -1,0 +1,1869 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚗 Galeri AI Asistan</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f8fafc;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+        }
+
+        /* Modern Dashboard Layout */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 24px;
+            min-height: 100vh;
+            padding: 24px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            padding: 24px;
+            height: fit-content;
+            position: sticky;
+            top: 24px;
+        }
+
+        /* Header Card */
+        .header-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 32px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" stop-color="white" stop-opacity="0.1"/><stop offset="100%" stop-color="white" stop-opacity="0"/></radialGradient></defs><circle cx="200" cy="200" r="300" fill="url(%23a)"/><circle cx="800" cy="800" r="200" fill="url(%23a)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header-card h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-card p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Action Buttons */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .action-btn {
+            background: white;
+            border: none;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            text-decoration: none;
+            color: var(--gray-700);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            border: 2px solid transparent;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .action-btn i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .action-btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .action-btn-primary i {
+            color: white;
+        }
+
+        .action-btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .action-btn-success i {
+            color: white;
+        }
+
+        /* Vehicles Section */
+        .vehicles-section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            margin-bottom: 24px;
+            gap: 12px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .vehicle-categories {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--gray-200);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .category-btn.active,
+        .category-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .vehicles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .vehicle-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .vehicle-card:hover {
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .vehicle-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .vehicle-type {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .vehicle-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 8px;
+        }
+
+        .vehicle-year {
+            font-size: 0.9rem;
+            color: var(--gray-600);
+        }
+
+        .vehicle-body {
+            padding: 16px;
+        }
+
+        .vehicle-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 12px;
+        }
+
+        .vehicle-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .feature-tag {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .vehicle-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--gray-600);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-outline:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-400);
+        }
+
+        /* Chat Section */
+        .chat-section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+        }
+
+        .chat-container {
+            flex: 1;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            background: var(--gray-50);
+        }
+
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .message.user .message-bubble {
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.ai .message-bubble {
+            background: white;
+            color: var(--gray-900);
+            border: 1px solid var(--gray-200);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .message.user .message-avatar {
+            background: var(--primary);
+            color: white;
+        }
+
+        .message.ai .message-avatar {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .chat-input-container {
+            padding: 16px;
+            border-top: 1px solid var(--gray-200);
+            background: white;
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary);
+        }
+
+        .chat-send {
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .chat-send:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Sidebar - Appointments */
+        .sidebar-section {
+            margin-bottom: 32px;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            margin-bottom: 16px;
+            gap: 12px;
+        }
+
+        .sidebar-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .appointment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .appointment-card {
+            padding: 16px;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            background: var(--gray-50);
+            transition: all 0.2s ease;
+        }
+
+        .appointment-card:hover {
+            border-color: var(--primary);
+            background: white;
+        }
+
+        .appointment-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .appointment-name {
+            font-weight: 600;
+            color: var(--gray-900);
+            font-size: 0.9rem;
+        }
+
+        .appointment-status {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: var(--success);
+            color: white;
+        }
+
+        .appointment-details {
+            font-size: 0.8rem;
+            color: var(--gray-600);
+            line-height: 1.4;
+        }
+
+        .appointment-vehicle {
+            font-weight: 500;
+            color: var(--primary);
+        }
+
+        /* Loading States */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: var(--gray-600);
+        }
+
+        .loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .sidebar {
+                position: static;
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                padding: 16px;
+                gap: 16px;
+            }
+            
+            .header-card {
+                padding: 24px 20px;
+            }
+            
+            .header-card h1 {
+                font-size: 2rem;
+            }
+            
+            .action-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .vehicles-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .vehicle-categories {
+                overflow-x: auto;
+                padding-bottom: 8px;
+            }
+            
+            .chat-section {
+                height: 400px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-stats {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+        }
+
+        /* Modern Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gray-100);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray-300);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gray-400);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 50px auto;
+            padding: 32px;
+            border-radius: 16px;
+            max-width: 500px;
+            position: relative;
+            box-shadow: var(--shadow-xl);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray-400);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background: var(--gray-100);
+            color: var(--gray-600);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Ana İçerik -->
+        <div class="main-content">
+            <!-- Header Card -->
+            <div class="header-card fade-in">
+                <h1><i class="fas fa-car"></i> Galeri AI Asistan</h1>
+                <p>Akıllı sesli asistan ile randevu alın, AI chat ile sorular sorun</p>
+                
+                <div class="header-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalVehicles">
+                            {% set total_vehicles = 0 %}
+                            {% for category, vehicle_list in vehicles.items() %}
+                                {% set total_vehicles = total_vehicles + vehicle_list|length %}
+                            {% endfor %}
+                            {{ total_vehicles }}
+                        </span>
+                        <span class="stat-label">Araç</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalAppointments">{{ appointments | length }}</span>
+                        <span class="stat-label">Randevu</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Hizmet</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hızlı Aksiyonlar -->
+            <div class="action-grid fade-in">
+                <button class="action-btn action-btn-primary" onclick="makeCall()">
+                    <i class="fas fa-phone"></i>
+                    <span>Sesli Asistan</span>
+                    <small>Hemen ara</small>
+                </button>
+                
+                <button class="action-btn action-btn-success" onclick="scrollToChat()">
+                    <i class="fas fa-robot"></i>
+                    <span>AI Chat</span>
+                    <small>Soru sor</small>
+                </button>
+                
+                <button class="action-btn" onclick="showAppointmentModal()">
+                    <i class="fas fa-calendar-plus"></i>
+                    <span>Randevu Al</span>
+                    <small>Hızlı form</small>
+                </button>
+            </div>
+
+            <!-- Araçlar Bölümü -->
+            <div class="vehicles-section fade-in">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-cars"></i>
+                        Araç Galerisi
+                    </h2>
+                </div>
+
+                <div class="vehicle-categories">
+                    <button class="category-btn active" data-category="all">Tümü</button>
+                    <button class="category-btn" data-category="otomobil">Otomobil</button>
+                    <button class="category-btn" data-category="suv">SUV</button>
+                    <button class="category-btn" data-category="karavan">Karavan</button>
+                </div>
+
+                <div class="vehicles-grid" id="vehiclesGrid">
+                    {% for category, vehicle_list in vehicles.items() %}
+                        {% for vehicle in vehicle_list %}
+                        <div class="vehicle-card" data-category="{{ category }}" onclick="showVehicleModal({{ vehicle | tojson }}, '{{ category }}')">
+                            <div class="vehicle-header">
+                                <div class="vehicle-type">{{ category.upper() }}</div>
+                                <div class="vehicle-name">{{ vehicle.marka }} {{ vehicle.model }}</div>
+                                <div class="vehicle-year">{{ vehicle.yil }} Model</div>
+                            </div>
+                            <div class="vehicle-body">
+                                <div class="vehicle-price">₺ {{ "{:,}".format(vehicle.fiyat).replace(",", ".") }}</div>
+                                <div class="vehicle-features">
+                                    {% for feature in vehicle.ozellikler %}
+                                    <span class="feature-tag">{{ feature }}</span>
+                                    {% endfor %}
+                                </div>
+                                <div class="vehicle-actions">
+                                    <button class="btn-sm btn-primary" onclick="event.stopPropagation(); requestCallback('{{ vehicle.marka }}', '{{ vehicle.model }}', {{ vehicle.fiyat }})">
+                                        <i class="fas fa-phone"></i> Ara
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- AI Chat Bölümü -->
+            <div class="chat-section fade-in" id="chatSection">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-robot"></i>
+                        AI Asistan
+                    </h2>
+                </div>
+
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message ai">
+                            <div class="message-avatar">AI</div>
+                            <div class="message-bubble">
+                                Merhaba! Ben galeri AI asistanınızım. Size nasıl yardımcı olabilirim? Araç önerileri, fiyat bilgileri veya randevu konularında sorularınızı cevaplayabilirim.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-container">
+                        <div class="chat-input-wrapper">
+                            <input type="text" class="chat-input" id="chatInput" placeholder="Mesajınızı yazın..." onkeypress="handleChatKeypress(event)">
+                            <button class="chat-send" onclick="sendMessage()">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="loading" id="loading">
+                    <i class="fas fa-spinner"></i> AI yanıtlıyor...
+                </div>
+            </div>
+        </div>
+
+        <!-- Yan Panel - Son Randevular -->
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-header">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-calendar-check"></i>
+                        Son Randevular
+                    </h3>
+                    <span class="text-sm text-gray-500">{{ appointments | length }} adet</span>
+                </div>
+                
+                <div class="appointment-list">
+                    {% if appointments %}
+                        {% for appointment in appointments[-10:] %}
+                        <div class="appointment-card" id="appointment-{{ appointment.id }}">
+                            <div class="appointment-header">
+                                <span class="appointment-name">{{ appointment.name }}</span>
+                                <div style="display: flex; gap: 4px;">
+                                    <button onclick="editAppointment({{ appointment.id }})" 
+                                            style="padding: 2px 6px; background: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="deleteAppointment({{ appointment.id }})" 
+                                            style="padding: 2px 6px; background: var(--danger); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="appointment-details">
+                                <div class="appointment-vehicle">{{ appointment.vehicle_type }}</div>
+                                <div>📞 {{ appointment.phone }}</div>
+                                <div>📅 {{ appointment.date }} {{ appointment.time }}</div>
+                                <div style="font-size: 0.7rem; color: var(--gray-500); margin-top: 4px;">
+                                    ID: {{ appointment.id }} | {{ appointment.created_at[:10] if appointment.created_at else 'Tarih yok' }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-8 text-gray-500">
+                            <i class="fas fa-calendar-alt text-4xl mb-4"></i>
+                            <p>Henüz randevu yok</p>
+                            <p class="text-sm">İlk randevuyu almak için sesli asistanı kullanın</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Hızlı İstatistikler -->
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">
+                    <i class="fas fa-chart-bar"></i>
+                    İstatistikler
+                </h3>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
+                    <div style="text-align: center; padding: 16px; background: var(--gray-50); border-radius: 8px;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">
+                            {{ vehicles.get('otomobil', [])|length }}
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--gray-600);">Otomobil</div>
+                    </div>
+                    <div style="text-align: center; padding: 16px; background: var(--gray-50); border-radius: 8px;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--success);">
+                            {{ vehicles.get('suv', [])|length }}
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--gray-600);">SUV</div>
+                    </div>
+                    <div style="text-align: center; padding: 16px; background: var(--gray-50); border-radius: 8px; grid-column: span 2;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--warning);">
+                            {{ vehicles.get('karavan', [])|length }}
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--gray-600);">Karavan</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vehicle Modal -->
+    <div id="vehicleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Araç Detayları</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalBody">
+                <!-- Modal içeriği JavaScript ile doldurulacak -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Appointment Modal -->
+    <div id="appointmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-calendar-plus"></i>
+                    Hızlı Randevu Al
+                </h3>
+                <button class="close-btn" onclick="closeAppointmentModal()">&times;</button>
+            </div>
+            <div id="appointmentModalBody">
+                <form id="appointmentForm" style="display: grid; gap: 16px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 4px; font-weight: 600; color: var(--gray-700);">
+                            <i class="fas fa-user"></i> Adınız Soyadınız
+                        </label>
+                        <input type="text" id="appointmentName" required 
+                               style="width: 100%; padding: 12px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 0.9rem;"
+                               placeholder="Adınızı ve soyadınızı girin">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 4px; font-weight: 600; color: var(--gray-700);">
+                            <i class="fas fa-phone"></i> Telefon Numaranız
+                        </label>
+                        <input type="tel" id="appointmentPhone" required 
+                               pattern="[0-9]{10,11}" 
+                               maxlength="11"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,11)"
+                               style="width: 100%; padding: 12px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 0.9rem;"
+                               placeholder="05XX XXX XX XX (Sadece rakam)">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 4px; font-weight: 600; color: var(--gray-700);">
+                            <i class="fas fa-car"></i> İlgilendiğiniz Araç Tipi
+                        </label>
+                        <select id="appointmentVehicleType" required 
+                                style="width: 100%; padding: 12px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 0.9rem;">
+                            <option value="">Araç tipi seçin</option>
+                            <option value="otomobil">Otomobil</option>
+                            <option value="suv">SUV</option>
+                            <option value="karavan">Karavan</option>
+                        </select>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <label style="display: block; margin-bottom: 4px; font-weight: 600; color: var(--gray-700);">
+                                <i class="fas fa-calendar"></i> Tarih
+                            </label>
+                            <input type="date" id="appointmentDate" required 
+                                   style="width: 100%; padding: 12px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 0.9rem;">
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; margin-bottom: 4px; font-weight: 600; color: var(--gray-700);">
+                                <i class="fas fa-clock"></i> Saat
+                            </label>
+                            <select id="appointmentTime" required 
+                                    style="width: 100%; padding: 12px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 0.9rem;">
+                                <option value="">Saat seçin</option>
+                                <option value="09:00">09:00</option>
+                                <option value="10:00">10:00</option>
+                                <option value="11:00">11:00</option>
+                                <option value="12:00">12:00</option>
+                                <option value="13:00">13:00</option>
+                                <option value="14:00">14:00</option>
+                                <option value="15:00">15:00</option>
+                                <option value="16:00">16:00</option>
+                                <option value="17:00">17:00</option>
+                                <option value="18:00">18:00</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 12px; margin-top: 16px;">
+                        <button type="button" onclick="closeAppointmentModal()" 
+                                style="flex: 1; padding: 12px; background: var(--gray-200); color: var(--gray-700); border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            İptal
+                        </button>
+                        <button type="submit" 
+                                style="flex: 2; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            <i class="fas fa-check"></i> Randevu Oluştur
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="appointmentLoading" style="display: none; text-align: center; padding: 20px;">
+                    <i class="fas fa-spinner" style="animation: spin 1s linear infinite; font-size: 1.5rem; color: var(--primary);"></i>
+                    <p style="margin-top: 8px; color: var(--gray-600);">Randevu oluşturuluyor...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Appointment Modal -->
+    <div id="editAppointmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-edit"></i>
+                    Randevu Düzenle
+                </h3>
+                <button class="close-btn" onclick="closeEditAppointmentModal()">&times;</button>
+            </div>
+            <div id="editAppointmentModalBody">
+                <form id="editAppointmentForm" style="display: grid; gap: 16px;">
+                    <input type="hidden" id="editAppointmentId">
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 4px; font-weight: 600; color: var(--gray-700);">
+                            <i class="fas fa-user"></i> Adınız Soyadınız
+                        </label>
+                        <input type="text" id="editAppointmentName" required 
+                               style="width: 100%; padding: 12px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 0.9rem;">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 4px; font-weight: 600; color: var(--gray-700);">
+                            <i class="fas fa-phone"></i> Telefon Numaranız
+                        </label>
+                        <input type="tel" id="editAppointmentPhone" required 
+                               pattern="[0-9]{10,11}" 
+                               maxlength="11"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,11)"
+                               style="width: 100%; padding: 12px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 0.9rem;">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 4px; font-weight: 600; color: var(--gray-700);">
+                            <i class="fas fa-car"></i> İlgilendiğiniz Araç Tipi
+                        </label>
+                        <select id="editAppointmentVehicleType" required 
+                                style="width: 100%; padding: 12px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 0.9rem;">
+                            <option value="">Araç tipi seçin</option>
+                            <option value="otomobil">Otomobil</option>
+                            <option value="suv">SUV</option>
+                            <option value="karavan">Karavan</option>
+                        </select>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <label style="display: block; margin-bottom: 4px; font-weight: 600; color: var(--gray-700);">
+                                <i class="fas fa-calendar"></i> Tarih
+                            </label>
+                            <input type="date" id="editAppointmentDate" required 
+                                   style="width: 100%; padding: 12px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 0.9rem;">
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; margin-bottom: 4px; font-weight: 600; color: var(--gray-700);">
+                                <i class="fas fa-clock"></i> Saat
+                            </label>
+                            <select id="editAppointmentTime" required 
+                                    style="width: 100%; padding: 12px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 0.9rem;">
+                                <option value="">Saat seçin</option>
+                                <option value="09:00">09:00</option>
+                                <option value="10:00">10:00</option>
+                                <option value="11:00">11:00</option>
+                                <option value="12:00">12:00</option>
+                                <option value="13:00">13:00</option>
+                                <option value="14:00">14:00</option>
+                                <option value="15:00">15:00</option>
+                                <option value="16:00">16:00</option>
+                                <option value="17:00">17:00</option>
+                                <option value="18:00">18:00</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 12px; margin-top: 16px;">
+                        <button type="button" onclick="closeEditAppointmentModal()" 
+                                style="flex: 1; padding: 12px; background: var(--gray-200); color: var(--gray-700); border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            İptal
+                        </button>
+                        <button type="submit" 
+                                style="flex: 2; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            <i class="fas fa-save"></i> Güncelle
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="editAppointmentLoading" style="display: none; text-align: center; padding: 20px;">
+                    <i class="fas fa-spinner" style="animation: spin 1s linear infinite; font-size: 1.5rem; color: var(--primary);"></i>
+                    <p style="margin-top: 8px; color: var(--gray-600);">Randevu güncelleniyor...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteConfirmModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
+                    Randevu Sil
+                </h3>
+                <button class="close-btn" onclick="closeDeleteConfirmModal()">&times;</button>
+            </div>
+            <div style="padding: 20px 0;">
+                <p style="margin-bottom: 16px; color: var(--gray-700);">
+                    Bu randevuyu silmek istediğinize emin misiniz?
+                </p>
+                <div id="deleteAppointmentInfo" style="background: var(--gray-50); padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+                    <!-- Silinecek randevu bilgileri buraya gelecek -->
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button onclick="closeDeleteConfirmModal()" 
+                            style="flex: 1; padding: 12px; background: var(--gray-200); color: var(--gray-700); border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                        İptal
+                    </button>
+                    <button onclick="confirmDeleteAppointment()" 
+                            style="flex: 1; padding: 12px; background: var(--danger); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                        <i class="fas fa-trash"></i> Sil
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentVehicle = null;
+
+        // Kategori filtreleme
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Aktif buton güncelleme
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const category = this.dataset.category;
+                filterVehicles(category);
+            });
+        });
+
+        function filterVehicles(category) {
+            const vehicles = document.querySelectorAll('.vehicle-card');
+            vehicles.forEach(vehicle => {
+                if (category === 'all' || vehicle.dataset.category === category) {
+                    vehicle.style.display = 'block';
+                } else {
+                    vehicle.style.display = 'none';
+                }
+            });
+        }
+
+        // Chat fonksiyonları
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            addMessage(message, 'user');
+            input.value = '';
+
+            document.getElementById('loading').style.display = 'block';
+
+            try {
+                const response = await fetch('/test-ai', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                });
+
+                const result = await response.json();
+                document.getElementById('loading').style.display = 'none';
+
+                if (result.response) {
+                    addMessage(result.response, 'ai');
+                    
+                    // Eğer randevu oluşturulduysa sayfayı güncelle
+                    if (result.appointment_created) {
+                        console.log('✅ Yeni randevu oluşturuldu:', result.appointment_created);
+                        
+                        // HEMEN başarı mesajı göster
+                        addMessage('🎉 Harika! Randevunuz başarıyla oluşturuldu ve sistemimize kaydedildi!', 'ai');
+                        
+                        // HEMEN istatistikleri ve sidebar'ı güncelle
+                        updateStatistics();
+                        updateAppointmentsSidebar();
+                        
+                        // Başarı bildirimi göster
+                        showSuccessNotification(`✅ Randevu Oluşturuldu! ID: ${result.appointment_created.id}`);
+                        
+                        console.log('🔄 İstatistikler ve sidebar HEMEN güncellendi');
+                    }
+                } else {
+                    addMessage('Üzgünüm, bir hata oluştu.', 'ai');
+                }
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                addMessage('Bağlantı hatası oluştu.', 'ai');
+            }
+        }
+
+        function addMessage(content, sender) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">${sender === 'user' ? 'SİZ' : 'AI'}</div>
+                <div class="message-bubble">${content}</div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function handleChatKeypress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // Utility fonksiyonlar
+        function scrollToChat() {
+            document.getElementById('chatSection').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+            document.getElementById('chatInput').focus();
+        }
+
+        function showVehicleModal(vehicle, category) {
+            currentVehicle = { ...vehicle, category };
+            
+            const modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = `
+                <div style="display: grid; gap: 16px;">
+                    <div>
+                        <strong>Marka:</strong> ${vehicle.marka}<br>
+                        <strong>Model:</strong> ${vehicle.model}<br>
+                        <strong>Yıl:</strong> ${vehicle.yil}<br>
+                        <strong>Kategori:</strong> ${category.toUpperCase()}<br>
+                        <strong>Fiyat:</strong> ₺ ${vehicle.fiyat.toLocaleString('tr-TR')}
+                    </div>
+                    <div>
+                        <strong>Özellikler:</strong><br>
+                        ${vehicle.ozellikler.map(f => `<span class="feature-tag">${f}</span>`).join(' ')}
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-top: 16px;">
+                        <button class="btn-sm btn-primary" style="flex: 1;" onclick="requestCallbackFromModal()">
+                            <i class="fas fa-phone"></i> Geri Arama
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('modalTitle').textContent = `${vehicle.marka} ${vehicle.model}`;
+            document.getElementById('vehicleModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('vehicleModal').style.display = 'none';
+            currentVehicle = null;
+        }
+
+        function requestCallbackFromModal() {
+            if (currentVehicle) {
+                requestCallback(currentVehicle.marka, currentVehicle.model, currentVehicle.fiyat);
+                closeModal();
+            }
+        }
+
+        // Geri arama talebi
+        function requestCallback(brand, model, price) {
+            const phoneNumber = prompt(`${brand} ${model} için geri arama talep ediyorsunuz.\n\nTelefon numaranızı girin (Sadece rakam):`);
+            
+            if (phoneNumber && phoneNumber.trim()) {
+                // Telefon numarası temizle ve doğrula
+                const cleanPhone = phoneNumber.trim().replace(/[^0-9]/g, '');
+                
+                // Telefon numarası doğrulama
+                if (cleanPhone.length < 10 || cleanPhone.length > 11) {
+                    alert('❌ Telefon numarası geçersiz! 10-11 haneli olmalıdır.\nÖrnek: 05321234567 veya 5321234567');
+                    return;
+                }
+                
+                // Telefon numarası 0 ile başlıyorsa 5 ile başlamalı
+                if (cleanPhone.length === 11 && !cleanPhone.startsWith('05')) {
+                    alert('❌ Telefon numarası 05 ile başlamalıdır!\nÖrnek: 05321234567');
+                    return;
+                }
+                
+                // Telefon numarası 10 haneli ise 5 ile başlamalı
+                if (cleanPhone.length === 10 && !cleanPhone.startsWith('5')) {
+                    alert('❌ 10 haneli telefon numarası 5 ile başlamalıdır!\nÖrnek: 5321234567');
+                    return;
+                }
+                
+                fetch('/request-callback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: 'Callback Talebi',
+                        phone: cleanPhone,
+                        vehicle_type: `${brand} ${model}`,
+                        vehicle_price: price,
+                        callback_time: 'Şimdi'
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('✅ Geri arama talebiniz alındı!\n\nGaleri ekibimiz 2-3 dakika içinde sizi arayacak.');
+                    } else {
+                        alert('❌ Bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
+                    }
+                })
+                .catch(error => {
+                    alert('❌ Bağlantı hatası. Lütfen daha sonra tekrar deneyin.');
+                });
+            }
+        }
+
+        // Sesli arama
+        async function makeCall() {
+            try {
+                const response = await fetch('/make-call');
+                const result = await response.json();
+                if (result.error) {
+                    alert('Arama hatası: ' + result.error);
+                } else {
+                    alert('Arama başlatıldı! Telefonunuz çalacak.');
+                }
+            } catch (error) {
+                alert('Arama başlatılamadı: ' + error.message);
+            }
+        }
+
+        // Randevu Modal Fonksiyonları
+        function showAppointmentModal() {
+            // Bugünün tarihi
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            // Minimum tarih olarak yarını ayarla
+            const minDate = tomorrow.toISOString().split('T')[0];
+            document.getElementById('appointmentDate').min = minDate;
+            
+            // Form'u sıfırla
+            document.getElementById('appointmentForm').reset();
+            
+            // Modal'ı göster
+            document.getElementById('appointmentModal').style.display = 'block';
+            
+            // İlk input'a odaklan
+            setTimeout(() => {
+                document.getElementById('appointmentName').focus();
+            }, 100);
+        }
+
+        function closeAppointmentModal() {
+            document.getElementById('appointmentModal').style.display = 'none';
+        }
+
+        // Form submit işlemi
+        document.getElementById('appointmentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('appointmentName').value.trim(),
+                phone: document.getElementById('appointmentPhone').value.trim(),
+                vehicle_type: document.getElementById('appointmentVehicleType').value,
+                date: document.getElementById('appointmentDate').value,
+                time: document.getElementById('appointmentTime').value
+            };
+            
+            // Form doğrulama
+            if (!formData.name || !formData.phone || !formData.vehicle_type || !formData.date || !formData.time) {
+                alert('❌ Lütfen tüm alanları doldurun!');
+                return;
+            }
+            
+            // Telefon numarası doğrulama
+            const phoneRegex = /^[0-9]{10,11}$/;
+            if (!phoneRegex.test(formData.phone)) {
+                alert('❌ Telefon numarası geçersiz! Lütfen sadece 10-11 haneli rakam girin.\nÖrnek: 05321234567');
+                return;
+            }
+            
+            // Telefon numarası 0 ile başlıyorsa 5 ile başlamalı
+            if (formData.phone.length === 11 && !formData.phone.startsWith('05')) {
+                alert('❌ Telefon numarası 05 ile başlamalıdır!\nÖrnek: 05321234567');
+                return;
+            }
+            
+            // Telefon numarası 10 haneli ise 5 ile başlamalı
+            if (formData.phone.length === 10 && !formData.phone.startsWith('5')) {
+                alert('❌ 10 haneli telefon numarası 5 ile başlamalıdır!\nÖrnek: 5321234567');
+                return;
+            }
+            
+            // Loading göster
+            document.getElementById('appointmentForm').style.display = 'none';
+            document.getElementById('appointmentLoading').style.display = 'block';
+            
+            try {
+                const response = await fetch('/api/appointments', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.id) {
+                    alert(`✅ Randevunuz başarıyla oluşturuldu!\n\nRandevu Numarası: ${result.id}\nTarih: ${formData.date} ${formData.time}\n\nGaleri ekibimiz size ulaşacak.`);
+                    closeAppointmentModal();
+                    
+                    // İstatistikleri güncelle
+                    updateStatistics();
+                    
+                    // Sayfayı yenile (randevu listesini güncellemek için)
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    throw new Error(result.error || 'Randevu oluşturulamadı');
+                }
+            } catch (error) {
+                alert('❌ Randevu oluşturulurken hata oluştu: ' + error.message);
+            } finally {
+                // Loading gizle, form'u göster
+                document.getElementById('appointmentLoading').style.display = 'none';
+                document.getElementById('appointmentForm').style.display = 'grid';
+            }
+        });
+
+        // Modal dışına tıklayınca kapat (her iki modal için)
+        window.onclick = function(event) {
+            const vehicleModal = document.getElementById('vehicleModal');
+            const appointmentModal = document.getElementById('appointmentModal');
+            const editAppointmentModal = document.getElementById('editAppointmentModal');
+            const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+            
+            if (event.target == vehicleModal) {
+                closeModal();
+            }
+            if (event.target == appointmentModal) {
+                closeAppointmentModal();
+            }
+            if (event.target == editAppointmentModal) {
+                closeEditAppointmentModal();
+            }
+            if (event.target == deleteConfirmModal) {
+                closeDeleteConfirmModal();
+            }
+        }
+
+        // Sayfa yüklendiğinde animasyonları başlat
+        document.addEventListener('DOMContentLoaded', function() {
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+            
+            // İstatistikleri güncelle
+            updateStatistics();
+        });
+
+        // İstatistikleri güncelle
+        async function updateStatistics() {
+            try {
+                // Araç verilerini al
+                const vehiclesResponse = await fetch('/api/vehicles');
+                const vehicles = await vehiclesResponse.json();
+                
+                // Randevu verilerini al
+                const appointmentsResponse = await fetch('/api/appointments');
+                const appointments = await appointmentsResponse.json();
+                
+                // Toplam araç sayısını hesapla
+                let totalVehicles = 0;
+                let otomobilCount = 0;
+                let suvCount = 0;
+                let karavanCount = 0;
+                
+                for (const [category, vehicleList] of Object.entries(vehicles)) {
+                    totalVehicles += vehicleList.length;
+                    
+                    if (category === 'otomobil') {
+                        otomobilCount = vehicleList.length;
+                    } else if (category === 'suv') {
+                        suvCount = vehicleList.length;
+                    } else if (category === 'karavan') {
+                        karavanCount = vehicleList.length;
+                    }
+                }
+                
+                // Header istatistiklerini güncelle
+                const totalVehiclesElement = document.getElementById('totalVehicles');
+                const totalAppointmentsElement = document.getElementById('totalAppointments');
+                
+                if (totalVehiclesElement) {
+                    totalVehiclesElement.textContent = totalVehicles;
+                }
+                
+                if (totalAppointmentsElement) {
+                    totalAppointmentsElement.textContent = appointments.length;
+                }
+                
+                console.log(`İstatistikler güncellendi: ${totalVehicles} araç, ${appointments.length} randevu`);
+                console.log(`Otomobil: ${otomobilCount}, SUV: ${suvCount}, Karavan: ${karavanCount}`);
+                
+            } catch (error) {
+                console.error('İstatistik güncelleme hatası:', error);
+            }
+        }
+
+        // Başarı bildirimi sistemi
+        function showSuccessNotification(message) {
+            // Eski bildirimleri temizle
+            const existingNotifications = document.querySelectorAll('.success-notification');
+            existingNotifications.forEach(n => n.remove());
+            
+            // Yeni bildirim oluştur
+            const notification = document.createElement('div');
+            notification.className = 'success-notification';
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--success);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 8px;
+                box-shadow: var(--shadow-lg);
+                z-index: 10000;
+                font-weight: 500;
+                animation: slideInRight 0.3s ease;
+                max-width: 400px;
+            `;
+            notification.textContent = message;
+            
+            // CSS animasyonu ekle
+            if (!document.querySelector('#success-notification-style')) {
+                const style = document.createElement('style');
+                style.id = 'success-notification-style';
+                style.textContent = `
+                    @keyframes slideInRight {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOutRight {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            document.body.appendChild(notification);
+            
+            // 4 saniye sonra kaldır
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 300);
+            }, 4000);
+        }
+
+        // Randevu Düzenleme Fonksiyonları
+        let currentEditingAppointmentId = null;
+        let currentDeletingAppointmentId = null;
+
+        async function editAppointment(appointmentId) {
+            try {
+                // Randevu bilgilerini al
+                const response = await fetch('/api/appointments');
+                const appointments = await response.json();
+                
+                const appointment = appointments.find(a => a.id === appointmentId);
+                if (!appointment) {
+                    alert('❌ Randevu bulunamadı!');
+                    return;
+                }
+                
+                // Form alanlarını doldur
+                document.getElementById('editAppointmentId').value = appointment.id;
+                document.getElementById('editAppointmentName').value = appointment.name || '';
+                document.getElementById('editAppointmentPhone').value = appointment.phone || '';
+                document.getElementById('editAppointmentVehicleType').value = appointment.vehicle_type || '';
+                document.getElementById('editAppointmentDate').value = appointment.date || '';
+                document.getElementById('editAppointmentTime').value = appointment.time || '';
+                
+                currentEditingAppointmentId = appointmentId;
+                
+                // Modal'ı göster
+                document.getElementById('editAppointmentModal').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Randevu düzenleme hatası:', error);
+                alert('❌ Randevu bilgileri alınamadı!');
+            }
+        }
+
+        function closeEditAppointmentModal() {
+            document.getElementById('editAppointmentModal').style.display = 'none';
+            currentEditingAppointmentId = null;
+        }
+
+        // Edit form submit
+        document.getElementById('editAppointmentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!currentEditingAppointmentId) {
+                alert('❌ Düzenlenecek randevu bulunamadı!');
+                return;
+            }
+            
+            const formData = {
+                name: document.getElementById('editAppointmentName').value.trim(),
+                phone: document.getElementById('editAppointmentPhone').value.trim(),
+                vehicle_type: document.getElementById('editAppointmentVehicleType').value,
+                date: document.getElementById('editAppointmentDate').value,
+                time: document.getElementById('editAppointmentTime').value
+            };
+            
+            // Form doğrulama
+            if (!formData.name || !formData.phone || !formData.vehicle_type || !formData.date || !formData.time) {
+                alert('❌ Lütfen tüm alanları doldurun!');
+                return;
+            }
+            
+            // Telefon numarası doğrulama
+            const phoneRegex = /^[0-9]{10,11}$/;
+            if (!phoneRegex.test(formData.phone)) {
+                alert('❌ Telefon numarası geçersiz! Lütfen sadece 10-11 haneli rakam girin.');
+                return;
+            }
+            
+            // Loading göster
+            document.getElementById('editAppointmentForm').style.display = 'none';
+            document.getElementById('editAppointmentLoading').style.display = 'block';
+            
+            try {
+                const response = await fetch(`/api/appointments/${currentEditingAppointmentId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.ok) {
+                    alert('✅ Randevu başarıyla güncellendi!');
+                    closeEditAppointmentModal();
+                    
+                    // İstatistikleri güncelle
+                    updateStatistics();
+                    
+                    // Sayfayı yenile
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    throw new Error('Güncelleme başarısız');
+                }
+            } catch (error) {
+                alert('❌ Randevu güncellenirken hata oluştu!');
+                console.error('Update error:', error);
+            } finally {
+                // Loading gizle, form'u göster
+                document.getElementById('editAppointmentLoading').style.display = 'none';
+                document.getElementById('editAppointmentForm').style.display = 'grid';
+            }
+        });
+
+        // Randevu Silme Fonksiyonları
+        async function deleteAppointment(appointmentId) {
+            try {
+                // Randevu bilgilerini al
+                const response = await fetch('/api/appointments');
+                const appointments = await response.json();
+                
+                const appointment = appointments.find(a => a.id === appointmentId);
+                if (!appointment) {
+                    alert('❌ Randevu bulunamadı!');
+                    return;
+                }
+                
+                // Silme onay bilgilerini göster
+                document.getElementById('deleteAppointmentInfo').innerHTML = `
+                    <strong>👤 ${appointment.name}</strong><br>
+                    📞 ${appointment.phone}<br>
+                    🚗 ${appointment.vehicle_type}<br>
+                    📅 ${appointment.date} ${appointment.time}
+                `;
+                
+                currentDeletingAppointmentId = appointmentId;
+                
+                // Onay modal'ını göster
+                document.getElementById('deleteConfirmModal').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Randevu silme hatası:', error);
+                alert('❌ Randevu bilgileri alınamadı!');
+            }
+        }
+
+        function closeDeleteConfirmModal() {
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+            currentDeletingAppointmentId = null;
+        }
+
+        async function confirmDeleteAppointment() {
+            if (!currentDeletingAppointmentId) {
+                alert('❌ Silinecek randevu bulunamadı!');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/appointments/${currentDeletingAppointmentId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    alert('✅ Randevu başarıyla silindi!');
+                    closeDeleteConfirmModal();
+                    
+                    // İstatistikleri güncelle
+                    updateStatistics();
+                    
+                    // Sayfayı yenile
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    throw new Error('Silme başarısız');
+                }
+            } catch (error) {
+                alert('❌ Randevu silinirken hata oluştu!');
+                console.error('Delete error:', error);
+            }
+        }
+
+        // Yeni fonksiyon - sidebar'ı güncelle
+        async function updateAppointmentsSidebar() {
+            try {
+                // Randevu verilerini al
+                const response = await fetch('/api/appointments');
+                const appointments = await response.json();
+                
+                // Sidebar appointment listesi elementini bul
+                const appointmentList = document.querySelector('.appointment-list');
+                if (!appointmentList) {
+                    console.log('Appointment list element bulunamadı');
+                    return;
+                }
+                
+                // Listeyi temizle
+                appointmentList.innerHTML = '';
+                
+                if (appointments.length === 0) {
+                    appointmentList.innerHTML = `
+                        <div class="text-center py-8 text-gray-500">
+                            <i class="fas fa-calendar-alt text-4xl mb-4"></i>
+                            <p>Henüz randevu yok</p>
+                            <p class="text-sm">İlk randevuyu almak için sesli asistanı kullanın</p>
+                        </div>
+                    `;
+                } else {
+                    // Son 10 randevuyu göster
+                    const recentAppointments = appointments.slice(-10);
+                    
+                    recentAppointments.forEach(appointment => {
+                        const appointmentCard = document.createElement('div');
+                        appointmentCard.className = 'appointment-card';
+                        appointmentCard.id = `appointment-${appointment.id}`;
+                        
+                        appointmentCard.innerHTML = `
+                            <div class="appointment-header">
+                                <span class="appointment-name">${appointment.name}</span>
+                                <div style="display: flex; gap: 4px;">
+                                    <button onclick="editAppointment(${appointment.id})" 
+                                            style="padding: 2px 6px; background: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="deleteAppointment(${appointment.id})" 
+                                            style="padding: 2px 6px; background: var(--danger); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="appointment-details">
+                                <div class="appointment-vehicle">${appointment.vehicle_type}</div>
+                                <div>📞 ${appointment.phone}</div>
+                                <div>📅 ${appointment.date} ${appointment.time}</div>
+                                <div style="font-size: 0.7rem; color: var(--gray-500); margin-top: 4px;">
+                                    ID: ${appointment.id} | ${appointment.created_at ? appointment.created_at.substr(0,10) : 'Tarih yok'}
+                                </div>
+                            </div>
+                        `;
+                        
+                        appointmentList.appendChild(appointmentCard);
+                    });
+                }
+                
+                console.log(`✅ Sidebar güncellendi: ${appointments.length} randevu`);
+                
+            } catch (error) {
+                console.error('❌ Sidebar güncelleme hatası:', error);
+            }
+        }
+    </script>
+</body>
+</html> 
